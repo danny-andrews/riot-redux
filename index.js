@@ -1,4 +1,6 @@
-import assert from 'assert';
+function assert(thingToBeTruthy, message) {
+  if(!thingToBeTruthy) { throw new Error(message); }
+}
 
 export default function(store) {
   assert(store, '"store" cannot be null!');
