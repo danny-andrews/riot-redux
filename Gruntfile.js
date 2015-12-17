@@ -12,7 +12,10 @@ module.exports = function(grunt) {
     jscs: {src: JS_GLOB},
     shell: {
       jshint: {command: 'node_modules/.bin/jshint ' + JS_FILES.join(' ')},
-      mocha: {command: 'mocha test/test.js --compilers js:babel-core/register'}
+      mocha: {
+        command: 'mocha --recursive --compilers js:babel-core/register ' +
+          '--require ./test/setup.js'
+      }
     },
     webpack: {all: webpack}
   });

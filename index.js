@@ -1,3 +1,5 @@
+import { bindActionCreators } from 'redux';
+
 function assert(thingToBeTruthy, message) {
   if(!thingToBeTruthy) { throw new Error(message); }
 }
@@ -5,12 +7,8 @@ function assert(thingToBeTruthy, message) {
 export default function(store) {
   assert(store, '"store" cannot be null!');
 
-  function dispatch(action) {
-    assert(action && action.type, '"action" must have a "type" property!');
-    store.dispatch(action);
-  }
-  function subscribe(selector, callback = () => this.update()) {
-    assert(selector, '"selector" cannot be null!');
+  function subscribe(selector) {
+    let callback = (state) => this.update(state);
     let currentState = selector(store.getState());
 
     function handleChange() {
@@ -25,9 +23,21 @@ export default function(store) {
     handleChange();
     return unsubscribe;
   }
+  function init() {
+    let {actions: actions = {}, selector: selector = () => ({})} = this.opts;
+    let boundActions = bindActionCreators(actions, store.dispatch);
+    let data = selector(store.getState());
+    Object.keys(boundActions).forEach((actionName) => {
+      this[actionName] = function(e) {
+        if(e) {
+          e.preventUpdate = true;
+        }
+        boundActions[actionName]();
+      };
+    });
+    Object.keys(data).forEach((key) => this[key] = data[key]);
+    subscribe.call(this, selector);
+  }
 
-  return Object.freeze({
-    dispatch,
-    subscribe
-  });
+  return {init};
 }
