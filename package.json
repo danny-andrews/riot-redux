@@ -12,6 +12,7 @@
     "redux"
   ],
   "author": "Danny Andrews <lunde.andrews@gmail.com>",
+  "license": "MIT",
   "devDependencies": {
     "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.3.13",
