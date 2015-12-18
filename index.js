@@ -27,6 +27,12 @@ export default function(store) {
     let {actions: actions = {}, selector: selector = () => ({})} = this.opts;
     let boundActions = bindActionCreators(actions, store.dispatch);
     let data = selector(store.getState());
+    assert(
+      data && typeof data === 'object',
+      '"selector" must return an object. Please provide a valid selector.\n' +
+        `Selector given: ${selector}\n` +
+        `Value returned: ${data}`
+    );
     Object.keys(boundActions).forEach((actionName) => {
       this[actionName] = function(e) {
         if(e) {

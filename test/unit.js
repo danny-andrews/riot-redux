@@ -3,6 +3,7 @@ import Mixin from './support/mixin-factory';
 import FakeStore from './support/fake-store';
 
 const TEST_ACTION = {type: 'TEST_ACTION'};
+const INVALID_SELECTOR_REGEX = /selector.*must return an object/;
 
 describe('riot-redux', function() {
   it('throws Error if store not given', function() {
@@ -51,17 +52,25 @@ describe('riot-redux', function() {
       });
 
       it('calls update when selector value changes', function() {
-        this.subject.opts.selector = (store) => store.value;
+        this.subject.opts.selector = (store) => ({value: store.value});
         this.subject.init();
         this.store.setState({value: 2});
         expect(this.spy).toHaveBeenCalled();
       });
 
-      it('does not call update when oldValue === newValue', function() {
+      it('throws error when selector does not return an object', function() {
         this.subject.opts.selector = (store) => store.value;
-        this.subject.init();
-        expect(this.spy.calls.length).toBe(0);
-        this.store.setState({value: 1});
+        expect(() => this.subject.init()).toThrow(INVALID_SELECTOR_REGEX);
+      });
+
+      it('throws error when selector returns null', function() {
+        this.subject.opts.selector = () => undefined;
+        expect(() => this.subject.init()).toThrow(INVALID_SELECTOR_REGEX);
+      });
+
+      it('throws error when selector returns undefined', function() {
+        this.subject.opts.selector = () => undefined;
+        expect(() => this.subject.init()).toThrow(INVALID_SELECTOR_REGEX);
       });
     });
   });
