@@ -6,6 +6,9 @@ module.exports = {
     libraryTarget: 'umd',
     library: 'RiotRedux'
   },
+  externals: {
+    redux: {root: 'Redux', amd: 'redux'}
+  },
   module: {
     loaders: [
       {
