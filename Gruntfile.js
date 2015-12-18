@@ -15,12 +15,53 @@ module.exports = function(grunt) {
       mocha: {
         command: 'mocha --recursive --compilers js:babel-core/register ' +
           '--require ./test/setup.js'
+      },
+      npmPublish: {command: 'npm publish'}
+    },
+    webpack: {all: webpack},
+    gitadd: {
+      dist: {
+        options: {all: true}
       }
     },
-    webpack: {all: webpack}
+    gitcheckout: {
+      dist: {
+        options: {branch: 'master'}
+      }
+    },
+    gitcommit: {
+      dist: {
+        options: {verbose: true, message: '<%= grunt.task.current.args[0] %>'}
+      }
+    },
+    gittag: {
+      dist: {
+        options: {tag: '<%= grunt.task.current.args[0] %>'}
+      }
+    },
+    gitpush: {
+      dist: {
+        options: {remote: 'origin', branch: 'master'}
+      }
+    }
   });
 
+  grunt.registerTask('default', 'test');
   grunt.registerTask('lint', 'Lint code.', ['shell:jshint', 'jscs']);
   grunt.registerTask('test', 'Run tests.', ['lint', 'shell:mocha']);
-  grunt.registerTask('dist', 'Distribute code.', 'webpack:all');
+  grunt.registerTask(
+    'publish',
+    'Compile and push new version to git repo and npm.',
+    function(version) {
+      grunt.task.run(
+        'test',
+        'webpack:all',
+        'gitadd',
+        'gitcommit:' + version,
+        'gittag:' + version,
+        'gitpush',
+        'shell:npmPublish'
+      );
+    }
+  );
 };
