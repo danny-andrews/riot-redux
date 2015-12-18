@@ -3,11 +3,10 @@ module.exports = {
   output: {
     path: 'dist',
     filename: 'riot-redux.js',
-    libraryTarget: 'umd',
-    library: 'RiotRedux'
+    libraryTarget: 'commonjs2'
   },
   externals: {
-    redux: {root: 'Redux', amd: 'redux'}
+    redux: {commonjs2: 'redux'}
   },
   module: {
     loaders: [
