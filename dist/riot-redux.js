@@ -1,14 +1,5 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require(undefined));
-	else if(typeof define === 'function' && define.amd)
-		define(["redux"], factory);
-	else if(typeof exports === 'object')
-		exports["RiotRedux"] = factory(require(undefined));
-	else
-		root["RiotRedux"] = factory(root["Redux"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
-return /******/ (function(modules) { // webpackBootstrap
+module.exports =
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -125,9 +116,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
+	module.exports = require("redux");
 
 /***/ }
-/******/ ])
-});
-;
+/******/ ]);
