@@ -5,15 +5,15 @@ Riot bindings for [Redux](https://github.com/rackt/redux).
 
 ## Installation
 
-Riot Redux requires Riot **2.1.0 or later.**  
+Riot Redux requires Riot **2.1.0 or later**.  
+
 `npm install --save-dev riot-redux`
 
 ## Usage
 
 This mixin will use the following properties set on the component (if they exist):
-
-* {Object} [actions] An object whose keys are the names of the functions that will be set on the component instance and whose values are action creators. (Note: these will be automaatically bound to the `dispatch` method provided by the redux store inside of the riot-redux mixin's `init` method.)
-* {Function} [selector] A function which takes `state` as a parameter and returns an object whose keys are the names of the properties that will be set on the component instance, and whose values are the values of those properties.
+* `{Object} [actions]` An object whose keys are the names of the functions that will be set on the component instance and whose values are action creators. (Note: these will be automaatically bound to the `dispatch` method provided by the redux store inside of the riot-redux mixin's `init` method.)
+* `{Function} [selector]` A function which takes `state` as a parameter and returns an object whose keys are the names of the properties that will be set on the component instance, and whose values are the values of those properties.
 
 Example:
 
@@ -35,7 +35,7 @@ app.tag
     this.actions = {roar: () => console.log('BWAAA!')};
     this.selector = (state) => state.age;
   })
-  </script
+  </script>
 </app>
 ```
 
