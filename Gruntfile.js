@@ -47,7 +47,7 @@ module.exports = function(grunt) {
     },
     gitpush: {
       dist: {
-        options: {remote: 'origin', branch: 'master'}
+        options: {remote: 'origin', branch: '<%= grunt.task.current.args[0] %>'}
       }
     }
   });
@@ -73,7 +73,8 @@ module.exports = function(grunt) {
         'gitadd:dist',
         'gitcommit:dist:' + version,
         'gittag:dist:' + version,
-        'gitpush',
+        'gitpush:dist:master',
+        'gitpush:dist:' + version,
         'shell:npmPublish'
       );
     }
