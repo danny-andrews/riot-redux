@@ -15,7 +15,8 @@ module.exports = function(grunt) {
     shell: {
       jshint: {command: 'node_modules/.bin/jshint ' + JS_FILES.join(' ')},
       mocha: {
-        command: 'mocha --recursive --compilers js:babel-core/register ' +
+        command: 'node_modules/.bin/mocha --recursive ' +
+          '--compilers js:babel-core/register ' +
           '--require ./test/setup.js'
       },
       npmPublish: {command: 'npm publish'},
