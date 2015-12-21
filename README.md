@@ -33,7 +33,7 @@ app.tag
   <script>
   this.on('mount', function() {
     this.actions = {roar: () => console.log('BWAAA!')};
-    this.selector = (state) => state.age;
+    this.selector = (state) => {age: state.age};
   })
   </script>
 </app>
