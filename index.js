@@ -34,11 +34,11 @@ export default function(store) {
         `Value returned: ${data}`
     );
     Object.keys(boundActions).forEach((actionName) => {
-      this[actionName] = function(e) {
-        if(e) {
-          e.preventUpdate = true;
+      this[actionName] = function(...args) {
+        if(window.Event && window.Event.prototype.isPrototypeOf(args[0])) {
+          args[0].preventUpdate = true;
         }
-        boundActions[actionName]();
+        boundActions[actionName](...args);
       };
     });
     Object.keys(data).forEach((key) => this[key] = data[key]);

@@ -2,7 +2,8 @@ import expect from 'expect';
 import Mixin from './support/mixin-factory';
 import FakeStore from './support/fake-store';
 
-const TEST_ACTION = {type: 'TEST_ACTION'};
+const TEST_ACTION_CREATOR = payload => ({type: 'TEST_ACTION', payload});
+
 const INVALID_SELECTOR_REGEX = /selector.*must return an object/;
 
 describe('riot-redux', function() {
@@ -16,15 +17,16 @@ describe('riot-redux', function() {
       let spy = expect.spyOn(store, 'dispatch');
       let mixin = Mixin(store);
       mixin.opts.actions = {
-        doSomething: () => TEST_ACTION,
-        doSomethingElse: () => TEST_ACTION
+        doSomething: TEST_ACTION_CREATOR,
+        doSomethingElse: TEST_ACTION_CREATOR
       };
       mixin.init();
       expect(mixin.doSomething).toExist();
       expect(mixin.doSomethingElse).toExist();
       mixin.doSomething();
-      mixin.doSomethingElse();
+      mixin.doSomethingElse(1);
       expect(spy.calls.length).toEqual(2);
+      expect(spy.calls[1].arguments[0].payload).toBe(1);
     });
 
     it('sets instance variables for each key in object returned by selector',
