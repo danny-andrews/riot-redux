@@ -87,12 +87,13 @@ module.exports =
 
 	    var boundActions = (0, _redux.bindActionCreators)(actions, store.dispatch);
 	    var data = selector(store.getState());
+	    assert(data && (typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object', '"selector" must return an object. Please provide a valid selector.\n' + ('Selector given: ' + selector + '\n') + ('Value returned: ' + data));
 	    Object.keys(boundActions).forEach(function (actionName) {
-	      _this2[actionName] = function (e) {
-	        if (e) {
-	          e.preventUpdate = true;
+	      _this2[actionName] = function () {
+	        if (window.Event && window.Event.prototype.isPrototypeOf(arguments[0])) {
+	          arguments[0].preventUpdate = true;
 	        }
-	        boundActions[actionName]();
+	        boundActions[actionName].apply(boundActions, arguments);
 	      };
 	    });
 	    Object.keys(data).forEach(function (key) {
@@ -105,6 +106,8 @@ module.exports =
 	};
 
 	var _redux = __webpack_require__(1);
+
+	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
 
 	function assert(thingToBeTruthy, message) {
 	  if (!thingToBeTruthy) {
