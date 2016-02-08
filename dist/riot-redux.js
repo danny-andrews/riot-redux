@@ -74,6 +74,7 @@ module.exports =
 	    handleChange();
 	    return unsubscribe;
 	  }
+
 	  function init() {
 	    var _this2 = this;
 
@@ -88,6 +89,8 @@ module.exports =
 	    var boundActions = (0, _redux.bindActionCreators)(actions, store.dispatch);
 	    var data = selector(store.getState());
 	    assert(data && (typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object', '"selector" must return an object. Please provide a valid selector.\n' + ('Selector given: ' + selector + '\n') + ('Value returned: ' + data));
+
+	    this.store = store;
 	    Object.keys(boundActions).forEach(function (actionName) {
 	      _this2[actionName] = function () {
 	        if (window.Event && window.Event.prototype.isPrototypeOf(arguments[0])) {
@@ -99,6 +102,7 @@ module.exports =
 	    Object.keys(data).forEach(function (key) {
 	      return _this2[key] = data[key];
 	    });
+
 	    subscribe.call(this, selector);
 	  }
 
