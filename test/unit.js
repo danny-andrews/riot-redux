@@ -12,7 +12,14 @@ describe('riot-redux', function() {
   });
 
   describe('#init', function() {
-    it('sets actions to be bound actions on instance', function() {
+    it('exposes store as property of tag instance', function() {
+      const store = FakeStore();
+      const mixin = Mixin(store);
+      mixin.init();
+      expect(mixin.store).toEqual(store);
+    });
+
+    it('sets actions to be bound actions on tag instance', function() {
       let store = FakeStore();
       let spy = expect.spyOn(store, 'dispatch');
       let mixin = Mixin(store);

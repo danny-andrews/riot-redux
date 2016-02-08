@@ -23,6 +23,7 @@ export default function(store) {
     handleChange();
     return unsubscribe;
   }
+
   function init() {
     let {actions: actions = {}, selector: selector = () => ({})} = this.opts;
     let boundActions = bindActionCreators(actions, store.dispatch);
@@ -33,6 +34,8 @@ export default function(store) {
         `Selector given: ${selector}\n` +
         `Value returned: ${data}`
     );
+
+    this.store = store;
     Object.keys(boundActions).forEach((actionName) => {
       this[actionName] = function(...args) {
         if(window.Event && window.Event.prototype.isPrototypeOf(args[0])) {
@@ -42,6 +45,7 @@ export default function(store) {
       };
     });
     Object.keys(data).forEach((key) => this[key] = data[key]);
+
     subscribe.call(this, selector);
   }
 
