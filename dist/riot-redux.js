@@ -96,7 +96,7 @@ module.exports =
 	        if (window.Event && window.Event.prototype.isPrototypeOf(arguments[0])) {
 	          arguments[0].preventUpdate = true;
 	        }
-	        boundActions[actionName].apply(boundActions, arguments);
+	        return boundActions[actionName].apply(boundActions, arguments);
 	      };
 	    });
 	    Object.keys(data).forEach(function (key) {
