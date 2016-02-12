@@ -55,7 +55,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', 'test');
   grunt.registerTask('lint', 'Lint code.', ['shell:jshint', 'jscs']);
-  grunt.registerTask('test', 'Run tests.', ['lint', 'shell:mocha']);
+  grunt.registerTask('test', 'Run tests.', 'shell:mocha');
+  grunt.registerTask('ci', 'Run lints and tests.', ['lint', 'test']);
   grunt.registerTask(
     'publish',
     'Compile and push new version to git repo and npm.',
