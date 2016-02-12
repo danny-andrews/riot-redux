@@ -41,7 +41,7 @@ export default function(store) {
         if(window.Event && window.Event.prototype.isPrototypeOf(args[0])) {
           args[0].preventUpdate = true;
         }
-        boundActions[actionName](...args);
+        return boundActions[actionName](...args);
       };
     });
     Object.keys(data).forEach((key) => this[key] = data[key]);

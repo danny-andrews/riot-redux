@@ -28,12 +28,24 @@ describe('riot-redux', function() {
         doSomethingElse: TEST_ACTION_CREATOR
       };
       mixin.init();
-      expect(mixin.doSomething).toExist();
-      expect(mixin.doSomethingElse).toExist();
       mixin.doSomething();
       mixin.doSomethingElse(1);
       expect(spy.calls.length).toEqual(2);
       expect(spy.calls[1].arguments[0].payload).toBe(1);
+    });
+
+    it('actions set return result of dispatching actions', function() {
+      let store = FakeStore();
+      let mixin = Mixin(store);
+      mixin.opts.actions = {
+        doSomething: TEST_ACTION_CREATOR,
+        doSomethingElse: TEST_ACTION_CREATOR
+      };
+      mixin.init();
+      const result1 = mixin.doSomething();
+      const result2 = mixin.doSomethingElse(1);
+      expect(result1).toEqual({type: 'TEST_ACTION', payload: undefined});
+      expect(result2).toEqual({type: 'TEST_ACTION', payload: 1});
     });
 
     it('sets instance variables for each key in object returned by selector',

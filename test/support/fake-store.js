@@ -2,7 +2,9 @@ export default function(initialState = {}) {
   let callbacks = [];
   let state = initialState;
 
-  function dispatch() {}
+  function dispatch(action) {
+    return action;
+  }
   function setState(newState) {
     state = newState;
     callbacks.forEach((callback) => callback());
