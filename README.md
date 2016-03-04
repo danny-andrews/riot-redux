@@ -50,3 +50,22 @@ tiger.tag
   </script>
 </tiger>
 ```
+
+also supports use store inside tag
+
+tiger.tag
+```html
+<tiger>
+  <p>{age}</p> <!-- 12 -->
+  <button onclick={roar}></button> <!-- Clicking me prints 'BWAAA!' in the console. -->
+  <script>
+    const store = configureStore({age:12});
+    let actions = {roar: () => console.log('BWAAA!')};
+    let selector = (state) => ({age: state.age});
+    let riotRedux = require("riot-redux").default
+    this.mixin(riotRedux(
+      store, selector, actions
+    ));
+  </script>
+</tiger>
+```
