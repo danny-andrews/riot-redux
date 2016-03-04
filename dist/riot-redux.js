@@ -51,59 +51,31 @@ module.exports =
 	  value: true
 	});
 
-	exports.default = function (store) {
+	exports.default = function (store, selector, actions) {
 	  assert(store, '"store" cannot be null!');
 
-	  function subscribe(selector) {
+	  function init() {
 	    var _this = this;
 
-	    var callback = function callback(state) {
-	      return _this.update(state);
+	    selector = selector || this.opts.selector || defaultSelector;
+	    actions = actions || this.opts.actions;
+	    if (actions) this.actions = (0, _redux.bindActionCreators)(actions, store.dispatch);
+	    var getState = function getState() {
+	      return selector(store.getState());
 	    };
-	    var currentState = selector(store.getState());
-
-	    function handleChange() {
-	      var nextState = selector(store.getState());
-	      if (nextState !== currentState) {
-	        currentState = nextState;
-	        callback(currentState);
+	    var subscribe = function subscribe() {
+	      var nextState = getState();
+	      if (nextState !== _this.state) {
+	        _this.state = nextState;
+	        _this.update();
 	      }
-	    }
-
-	    var unsubscribe = store.subscribe(handleChange);
-	    handleChange();
-	    return unsubscribe;
-	  }
-
-	  function init() {
-	    var _this2 = this;
-
-	    var _opts = this.opts;
-	    var _opts$actions = _opts.actions;
-	    var actions = _opts$actions === undefined ? {} : _opts$actions;
-	    var _opts$selector = _opts.selector;
-	    var selector = _opts$selector === undefined ? function () {
-	      return {};
-	    } : _opts$selector;
-
-	    var boundActions = (0, _redux.bindActionCreators)(actions, store.dispatch);
-	    var data = selector(store.getState());
-	    assert(data && (typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object', '"selector" must return an object. Please provide a valid selector.\n' + ('Selector given: ' + selector + '\n') + ('Value returned: ' + data));
-
-	    this.store = store;
-	    Object.keys(boundActions).forEach(function (actionName) {
-	      _this2[actionName] = function () {
-	        if (window.Event && window.Event.prototype.isPrototypeOf(arguments[0])) {
-	          arguments[0].preventUpdate = true;
-	        }
-	        return boundActions[actionName].apply(boundActions, arguments);
-	      };
+	    };
+	    var data = getState();
+	    var unsubscribe = store.subscribe(subscribe);
+	    this.on("unmount", function () {
+	      return unsubscribe();
 	    });
-	    Object.keys(data).forEach(function (key) {
-	      return _this2[key] = data[key];
-	    });
-
-	    subscribe.call(this, selector);
+	    subscribe();
 	  }
 
 	  return { init: init };
@@ -111,13 +83,15 @@ module.exports =
 
 	var _redux = __webpack_require__(1);
 
-	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
-
 	function assert(thingToBeTruthy, message) {
 	  if (!thingToBeTruthy) {
 	    throw new Error(message);
 	  }
-	}
+	} // migrate from https://github.com/danny-andrews/riot-redux
+
+	var defaultSelector = function defaultSelector(state) {
+	  return state;
+	};
 
 /***/ },
 /* 1 */
