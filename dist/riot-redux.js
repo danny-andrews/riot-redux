@@ -103,7 +103,8 @@ module.exports =
 	      return _this2[key] = data[key];
 	    });
 
-	    subscribe.call(this, selector);
+	    var unsubscribe = subscribe.call(this, selector);
+	    this.on('unmount', unsubscribe);
 	  }
 
 	  return { init: init };
