@@ -46,7 +46,8 @@ export default function(store) {
     });
     Object.keys(data).forEach((key) => this[key] = data[key]);
 
-    subscribe.call(this, selector);
+    const unsubscribe = subscribe.call(this, selector);
+    this.on('unmount', unsubscribe);
   }
 
   return {init};

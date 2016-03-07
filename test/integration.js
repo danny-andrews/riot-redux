@@ -17,59 +17,99 @@ compileDummy({
   }
 });
 
+function SubjectFac(opts = {}) {
+  const {
+    store: store = FakeStore(),
+    componentData: componentData = {}
+  } = opts;
+  riot.mixin('redux', reduxMixin(store));
+  return {
+    tag: setup({name: DUMMY_NAME, data: componentData}),
+    el: document.querySelector(DUMMY_NAME)
+  };
+}
+
 describe('component with riot-redux mixed in', function() {
   beforeEach(function() {
-    this.store = FakeStore({name: 'Preston', petIds: [3, 4], age: 3});
-    riot.mixin('redux', reduxMixin(this.store));
-    this.actionSpy = expect.createSpy();
-    this.subject = setup({
-      name: DUMMY_NAME,
-      data: {
-        selector(state) {
-          return {name: state.name, pets: state.petIds};
-        },
-        actions: {changeName: this.actionSpy}
-      }
-    });
-    this.componentEl = document.querySelector(DUMMY_NAME);
     rerenderSpy.calls = [];
   });
   afterEach(function() {
-    this.actionSpy.restore();
-    teardown(this.subject);
+    teardown();
   });
 
   it('has instance vars set', function() {
-    expect(this.subject.name).toBe('Preston');
-    expect(this.subject.pets).toEqual([3, 4]);
+    const store = FakeStore({name: 'Preston', petIds: [3, 4], age: 3});
+    const subject = SubjectFac({
+      store,
+      componentData: {
+        selector: state => ({name: state.name, pets: state.petIds})
+      }
+    }).tag;
+    expect(subject.name).toBe('Preston');
+    expect(subject.pets).toEqual([3, 4]);
   });
 
   it('has actions set', function() {
-    expect(this.subject.changeName).toBeA(Function);
+    const subject = SubjectFac({
+      componentData: {
+        actions: {changeName() {}}
+      }
+    }).tag;
+    expect(subject.changeName).toBeA(Function);
   });
 
   it('displays properties', function() {
-    let nameText = this.componentEl.querySelector('.name').innerHTML;
-    expect(nameText).toBe('Preston');
+    const store = FakeStore({name: 'Preston'});
+    const el = SubjectFac({
+      store,
+      componentData: {
+        selector: state => ({name: state.name})
+      }
+    }).el;
+
+    expect(el.querySelector('.name').innerHTML).toBe('Preston');
   });
 
   it('runs actions', function() {
-    let button = this.componentEl.querySelector('.change-name');
+    const actionSpy = expect.createSpy();
+    const el = SubjectFac({
+      componentData: {
+        actions: {changeName: actionSpy}
+      }
+    }).el;
+    let button = el.querySelector('.change-name');
     button.click();
-    expect(this.actionSpy).toHaveBeenCalled();
+    expect(actionSpy).toHaveBeenCalled();
   });
 
   it('rerenders when state changes', function() {
-    let newState = Object.assign(this.store.getState(), {name: 'Tom'});
-    this.store.setState(newState);
-    let nameText = this.componentEl.querySelector('.name').innerHTML;
+    const store = FakeStore({name: 'Preston'});
+    const el = SubjectFac({
+      store,
+      componentData: {
+        selector: state => ({name: state.name})
+      }
+    }).el;
+    let newState = Object.assign(store.getState(), {name: 'Tom'});
+    store.setState(newState);
+    let nameText = el.querySelector('.name').innerHTML;
     expect(rerenderSpy).toHaveBeenCalled();
     expect(nameText).toBe('Tom');
   });
 
   it('does not auto-rerender when events are raised', function() {
-    let button = this.componentEl.querySelector('.change-name');
+    const el = SubjectFac().el;
+    let button = el.querySelector('.change-name');
     button.click();
-    expect(rerenderSpy.calls.length).toBe(0);
+    expect(rerenderSpy.calls.length).toBe(1);
+  });
+
+  it('unsubscribes from store events when tag is unmounted', function() {
+    const store = FakeStore();
+    const storeUnsubscribeSpy = expect.createSpy();
+    expect.spyOn(store, 'subscribe').andReturn(storeUnsubscribeSpy);
+    const subject = SubjectFac({store}).tag;
+    subject.unmount();
+    expect(storeUnsubscribeSpy).toHaveBeenCalled();
   });
 });
