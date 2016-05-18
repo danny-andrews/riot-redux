@@ -1,28 +1,22 @@
-/* jshint varstmt: false */
-/* jscs:disable requireTemplateStrings */
-var glob = require('glob');
-var assert = require('assert');
-var semver = require('semver');
-var webpack = require('./webpack.config');
-const JS_GLOB = './{,test/**/}*.js';
-const JS_FILES = glob.sync(JS_GLOB);
+/* eslint-disable prefer-template, prefer-arrow-callback */
+const assert = require('assert');
+const semver = require('semver');
+const webpack = require('./webpack.config');
 
 module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
   grunt.initConfig({
-    jscs: {src: JS_GLOB},
     shell: {
-      jshint: {command: 'node_modules/.bin/jshint ' + JS_FILES.join(' ')},
       mocha: {
-        command: 'node_modules/.bin/mocha --recursive ' +
-          '--compilers js:babel-core/register ' +
-          '--require ./test/setup.js'
+        command: 'node_modules/.bin/mocha --recursive '
+          + '--compilers js:babel-core/register '
+          + '--require ./test/setup.js'
       },
       npmPublish: {command: 'npm publish'},
       npmVersion: {
-        command: 'npm --no-git-tag-version version ' +
-          '<%= grunt.task.current.args[0] %>'
+        command: 'npm --no-git-tag-version version '
+          + '<%= grunt.task.current.args[0] %>'
       }
     },
     webpack: {all: webpack},
@@ -54,19 +48,17 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('default', 'test');
-  grunt.registerTask('lint', 'Lint code.', ['shell:jshint', 'jscs']);
   grunt.registerTask('test', 'Run tests.', 'shell:mocha');
-  grunt.registerTask('ci', 'Run lints and tests.', ['lint', 'test']);
   grunt.registerTask(
     'publish',
     'Compile and push new version to git repo and npm.',
     function(version) {
       assert(version, 'Version number is required!');
-      var versionNum = semver.clean(version);
+      const versionNum = semver.clean(version);
       assert(
         semver.valid(versionNum),
-        'Given version num (' + version + ') is invalid. Must be in the' +
-          ' following format: [X.X.X].'
+        'Given version num (' + version + ') is invalid. Must be in the'
+          + ' following format: [X.X.X].'
       );
       grunt.task.run(
         'test',

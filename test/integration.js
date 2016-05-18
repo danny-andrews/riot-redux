@@ -1,11 +1,11 @@
+import {compileDummy, setup, teardown} from './support/integration-helpers';
 import expect from 'expect';
-import riot from 'riot';
-import { compileDummy, setup, teardown } from './support/integration-helpers';
-import reduxMixin from '../index';
 import FakeStore from './support/fake-store';
+import reduxMixin from '../index';
+import riot from 'riot';
 
 const DUMMY_NAME = 'dummy';
-let rerenderSpy = expect.createSpy();
+const rerenderSpy = expect.createSpy();
 
 compileDummy({
   name: DUMMY_NAME,
@@ -23,6 +23,7 @@ function SubjectFac(opts = {}) {
     componentData: componentData = {}
   } = opts;
   riot.mixin('redux', reduxMixin(store));
+
   return {
     tag: setup({name: DUMMY_NAME, data: componentData}),
     el: document.querySelector(DUMMY_NAME)
@@ -52,7 +53,7 @@ describe('component with riot-redux mixed in', function() {
   it('has actions set', function() {
     const subject = SubjectFac({
       componentData: {
-        actions: {changeName() {}}
+        actions: {changeName: () => {}}
       }
     }).tag;
     expect(subject.changeName).toBeA(Function);
@@ -77,7 +78,7 @@ describe('component with riot-redux mixed in', function() {
         actions: {changeName: actionSpy}
       }
     }).el;
-    let button = el.querySelector('.change-name');
+    const button = el.querySelector('.change-name');
     button.click();
     expect(actionSpy).toHaveBeenCalled();
   });
@@ -90,16 +91,16 @@ describe('component with riot-redux mixed in', function() {
         selector: state => ({name: state.name})
       }
     }).el;
-    let newState = Object.assign(store.getState(), {name: 'Tom'});
+    const newState = Object.assign(store.getState(), {name: 'Tom'});
     store.setState(newState);
-    let nameText = el.querySelector('.name').innerHTML;
+    const nameText = el.querySelector('.name').innerHTML;
     expect(rerenderSpy).toHaveBeenCalled();
     expect(nameText).toBe('Tom');
   });
 
   it('does not auto-rerender when events are raised', function() {
     const el = SubjectFac().el;
-    let button = el.querySelector('.change-name');
+    const button = el.querySelector('.change-name');
     button.click();
     expect(rerenderSpy.calls.length).toBe(1);
   });
