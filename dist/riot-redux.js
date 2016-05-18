@@ -47,6 +47,8 @@ module.exports =
 
 	'use strict';
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -67,11 +69,14 @@ module.exports =
 	      if (nextState !== currentState) {
 	        currentState = nextState;
 	        callback(currentState);
+
+	        return;
 	      }
 	    }
 
 	    var unsubscribe = store.subscribe(handleChange);
 	    handleChange();
+
 	    return unsubscribe;
 	  }
 
@@ -96,11 +101,12 @@ module.exports =
 	        if (window.Event && window.Event.prototype.isPrototypeOf(arguments[0])) {
 	          arguments[0].preventUpdate = true;
 	        }
+
 	        return boundActions[actionName].apply(boundActions, arguments);
 	      };
 	    });
 	    Object.keys(data).forEach(function (key) {
-	      return _this2[key] = data[key];
+	      _this2[key] = data[key];
 	    });
 
 	    var unsubscribe = subscribe.call(this, selector);
@@ -111,8 +117,6 @@ module.exports =
 	};
 
 	var _redux = __webpack_require__(1);
-
-	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
 
 	function assert(thingToBeTruthy, message) {
 	  if (!thingToBeTruthy) {
