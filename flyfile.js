@@ -46,7 +46,8 @@ x.publish = function * () {
   yield this.shell('git tag ' + version);
   yield [
     this.shell('git push origin master'),
-    this.shell('git push origin --tags')
+    this.shell('git push origin --tags'),
+    this.shell('npm publish')
   ];
 };
 
