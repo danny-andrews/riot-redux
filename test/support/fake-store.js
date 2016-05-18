@@ -1,5 +1,5 @@
 export default function(initialState = {}) {
-  let callbacks = [];
+  const callbacks = [];
   let state = initialState;
 
   function dispatch(action) {
@@ -7,11 +7,12 @@ export default function(initialState = {}) {
   }
   function setState(newState) {
     state = newState;
-    callbacks.forEach((callback) => callback());
+    callbacks.forEach(callback => callback());
   }
   function subscribe(callback) {
     const index = callbacks.length;
     callbacks.push(callback);
+
     return () => callbacks.splice(index);
   }
   function getState() { return state; }

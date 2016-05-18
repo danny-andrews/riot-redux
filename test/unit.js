@@ -1,6 +1,6 @@
 import expect from 'expect';
-import Mixin from './support/mixin-factory';
 import FakeStore from './support/fake-store';
+import Mixin from './support/mixin-factory';
 
 const TEST_ACTION_CREATOR = payload => ({type: 'TEST_ACTION', payload});
 
@@ -20,9 +20,9 @@ describe('riot-redux', function() {
     });
 
     it('sets actions to be bound actions on tag instance', function() {
-      let store = FakeStore();
-      let spy = expect.spyOn(store, 'dispatch');
-      let mixin = Mixin(store);
+      const store = FakeStore();
+      const spy = expect.spyOn(store, 'dispatch');
+      const mixin = Mixin(store);
       mixin.opts.actions = {
         doSomething: TEST_ACTION_CREATOR,
         doSomethingElse: TEST_ACTION_CREATOR
@@ -35,8 +35,8 @@ describe('riot-redux', function() {
     });
 
     it('actions set return result of dispatching actions', function() {
-      let store = FakeStore();
-      let mixin = Mixin(store);
+      const store = FakeStore();
+      const mixin = Mixin(store);
       mixin.opts.actions = {
         doSomething: TEST_ACTION_CREATOR,
         doSomethingElse: TEST_ACTION_CREATOR
@@ -49,18 +49,20 @@ describe('riot-redux', function() {
     });
 
     it('sets instance variables for each key in object returned by selector',
-        function() {
-      let store = FakeStore({itemIds: [1, 2, 3], name: 'Bob', age: 20});
-      let mixin = Mixin(store);
-      mixin.opts.selector = function(state) {
-        let {itemIds, age} = state;
-        return {itemIds, age};
-      };
-      mixin.init();
-      expect(mixin.itemIds).toEqual([1, 2, 3]);
-      expect(mixin.age).toBe(20);
-      expect(mixin.name).toNotExist();
-    });
+      function() {
+        const store = FakeStore({itemIds: [1, 2, 3], name: 'Bob', age: 20});
+        const mixin = Mixin(store);
+        mixin.opts.selector = function(state) {
+          const {itemIds, age} = state;
+
+          return {itemIds, age};
+        };
+        mixin.init();
+        expect(mixin.itemIds).toEqual([1, 2, 3]);
+        expect(mixin.age).toBe(20);
+        expect(mixin.name).toNotExist();
+      }
+    );
 
     context('subscribes the component to store events', function() {
       beforeEach(function() {
@@ -73,24 +75,19 @@ describe('riot-redux', function() {
       });
 
       it('calls update when selector value changes', function() {
-        this.subject.opts.selector = (store) => ({value: store.value});
+        this.subject.opts.selector = store => ({value: store.value});
         this.subject.init();
         this.store.setState({value: 2});
         expect(this.spy).toHaveBeenCalled();
       });
 
       it('throws error when selector does not return an object', function() {
-        this.subject.opts.selector = (store) => store.value;
+        this.subject.opts.selector = store => store.value;
         expect(() => this.subject.init()).toThrow(INVALID_SELECTOR_REGEX);
       });
 
       it('throws error when selector returns null', function() {
-        this.subject.opts.selector = () => undefined;
-        expect(() => this.subject.init()).toThrow(INVALID_SELECTOR_REGEX);
-      });
-
-      it('throws error when selector returns undefined', function() {
-        this.subject.opts.selector = () => undefined;
+        this.subject.opts.selector = () => null;
         expect(() => this.subject.init()).toThrow(INVALID_SELECTOR_REGEX);
       });
     });
