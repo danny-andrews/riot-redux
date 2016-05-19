@@ -6,7 +6,8 @@ const x = module.exports;
 const args = parseArgs(process.argv.slice(2), {'--': true});
 const version = args['--'][0];
 const PATHS = {
-  moduleBins: path.join('node_modules', '.bin')
+  moduleBins: path.join('node_modules', '.bin'),
+  jsSrc: ['"*.js"', 'test', 'lib']
 };
 
 function binPath(bin) {
@@ -15,7 +16,7 @@ function binPath(bin) {
 
 x.lint = function() {
   return [
-    this.shell('eslint *.js test/**/*.js'),
+    this.shell('eslint ' + PATHS.jsSrc.join(' ')),
     this.shell(binPath('sort-package-json'))
   ];
 };

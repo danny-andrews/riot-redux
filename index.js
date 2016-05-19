@@ -1,33 +1,9 @@
+import assert from './lib/util/assert';
 import {bindActionCreators} from 'redux';
-
-function assert(thingToBeTruthy, message) {
-  if(!thingToBeTruthy) {
-    throw new Error(message);
-  }
-}
+import observeStore from './lib/util/observe-store';
 
 export default function(store) {
   assert(store, '"store" cannot be null!');
-
-  function subscribe(selector) {
-    const callback = state => this.update(state);
-    let currentState = selector(store.getState());
-
-    function handleChange() {
-      const nextState = selector(store.getState());
-      if(nextState !== currentState) {
-        currentState = nextState;
-        callback(currentState);
-
-        return;
-      }
-    }
-
-    const unsubscribe = store.subscribe(handleChange);
-    handleChange();
-
-    return unsubscribe;
-  }
 
   function init() {
     const {actions: actions = {}, selector: selector = () => ({})} = this.opts;
@@ -54,7 +30,11 @@ export default function(store) {
       this[key] = data[key];
     });
 
-    const unsubscribe = subscribe.call(this, selector);
+    const unsubscribe = observeStore(
+      store,
+      selector,
+      state => this.update(state)
+    );
     this.on('unmount', unsubscribe);
   }
 
