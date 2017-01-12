@@ -12,7 +12,7 @@ Riot Redux requires Riot **2.1.0 or later**.
 ## Usage
 
 This mixin will use the following properties set on the component (if they exist):
-* `{Object} [actions]` An object whose keys are the names of the functions that will be set on the component instance and whose values are action creators. (Note: these will be automaatically bound to the `dispatch` method provided by the redux store inside of the riot-redux mixin's `init` method.)
+* `{Object} [actions]` An object whose keys are the names of the functions that will be set on the component instance and whose values are action creators. (Note: these will be automatically bound to the `dispatch` method provided by the redux store inside of the riot-redux mixin's `init` method.)
 * `{Function} [selector]` A function which takes `state` as a parameter and returns an object whose keys are the names of the properties that will be set on the component instance, and whose values are the values of those properties.
 * `{Object} store` The Redux store passed to the mixin factory function. (Use this only if necessary).
 
